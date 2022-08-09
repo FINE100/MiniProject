@@ -1,12 +1,14 @@
 package com.playground.admin;
 
 import com.playground.member.Member;
+import com.playground.reservation.Reservation;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
 import com.playground.common.DAO;
+import com.playground.common.Join;
 
 public class AdminDAO extends DAO {
 
@@ -18,7 +20,7 @@ public class AdminDAO extends DAO {
 
 	}
 
-	private static AdminDAO getInstance() {
+	public static AdminDAO getInstance() {
 		return ad;
 	}
 
@@ -39,7 +41,7 @@ public class AdminDAO extends DAO {
 				member.setMemberPw(rs.getString("member_pw"));
 				member.setMemberName(rs.getString("member_name"));
 				member.setRole(rs.getString("role"));
-
+				
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -153,7 +155,7 @@ public class AdminDAO extends DAO {
 		try {
 			conn();
 			String sql = "SELECT member_id, member_name, member_tel FROM member WHERE member_id = ?";
-			stmt = conn.createStatement();
+			pstmt = conn.prepareStatement(sql);
 			rs = stmt.executeQuery(sql);
 
 			while (rs.next()) {
@@ -192,7 +194,7 @@ public class AdminDAO extends DAO {
 		try {
 			conn();
 			String sql = "select * from member";
-			stmt = conn.createStatement();
+			pstmt = conn.prepareStatement(sql);
 			rs = stmt.executeQuery(sql);
 
 			while (rs.next()) {
@@ -234,6 +236,7 @@ public int useMembership(Member member) {
 	try {
 		conn();
 		String sql = "update member set member_charging = member_charging -? where member_id =?";
+
 		pstmt = conn.prepareStatement(sql);
 		pstmt.setInt(1, member.getMemberCharging());
 		pstmt.setInt(2, member.getMemberId());
@@ -295,17 +298,81 @@ public int useMemberPoint(Member member) {
 // 수영장 예약현황 select
 //4-1) 회원별 예약 현황 조회 : 회원ID, 이름, 강아지 수, 예약날짜, 이용 시간(타임)
 
-public Member selectReservation() {
-	Member member = new Member();
+public Join selectReservation() {
+	Join join = null;
+	Member mem = null;
+	
 	try {
 		conn();
+		String sql = "select m.member_id, m.member_name, m.member_puppy, "
+				+ "r.reservation_date, r.reservation_time "
+				+ "from member m, reservation r "
+				+ "where m.member_id = r.member_id";
 		
+		pstmt = conn.prepareStatement(sql);
+			rs = pstmt.executeQuery();
+
+		while (rs.next()) {
+			join = new Join();
+			join.setMemberId(rs.getInt("member_id"));
+			join.setMemberName(rs.getString("member_name"));
+			join.setMemberPuppy(rs.getInt("member_puppy"));
+			
+			join.setReservationDate(rs.getString("reservation_date"));
+			join.setReservationTime(rs.getString("reservation_time"));
+			
 	
-}
+		}
+	} catch (Exception e) {
+		e.printStackTrace();
+	} finally {
+		disconnect();
+	}
 	
-	retrun member;
+	return join;
 }
+
 //4-2) 타임별 예약 현황 조회 : A타임 | B 타임 | C 타임 
+//public List<Reservation>showReservateTime(String time){
+//	List<Reservation>list = new ArrayList<>();
+//	Member member = null;
+//	
+//	try { 
+//		conn();
+//	String sql = "select * from reservation where reservation_time =?";
+//	
+//	pstmt = conn.prepareStatement(sql);
+//	pstmt.setString(1, time);
+//	
+//	rs = pstmt.executeQuery();
+//	
+//	
+//	while(rs.next()) {
+//		product = new Product();
+//		product.setProductName(rs.getString("product_name"));
+//		product.setProductPrice(rs.getInt("product_price"));
+//		product.setProductExplain(rs.getString("product_explain"));
+//		product.setProductId(rs.getString("product_id"));
+//		product.setProductSales(rs.getInt("product_sales"));
+//		product.setStores(rs.getString("stores"));
+//		list.add(product);
+//		
+//	}
+//	}catch(SQLException e) {
+//		System.out.println("※※※Error 에러 코드표 확인하세요.※※※");
+//		System.out.println("해당 Error 코드 : " + e.getErrorCode());
+//		System.out.println("해당원인" + e.getMessage());
+//	
+//		// ora_00001 : 어떤 이유로 오류가 났습니다. >> 표시할 수 있도록 함.
+//		e.getMessage();	   // 오류 메세지 보이게 하는 방법
+//		e.getErrorCode(); // 오류 메세지 보이게 하는 방법	
+//		
+//	}catch(Exception e) {
+//		
+//	}finally {
+//		disconnect();
+//	}
+//	return list;
 
 
 
@@ -317,7 +384,7 @@ public int deleteMembershp(int memberId) {
 	int result = 0;
 	try {
 		conn();
-		String sql = "delet from member where member_id =?";
+		String sql = "delete from member where member_id =?";
 		pstmt = conn.prepareStatement(sql);
 		pstmt.setInt(1, memberId);
 		
