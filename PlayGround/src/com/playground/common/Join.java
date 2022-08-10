@@ -1,4 +1,5 @@
 package com.playground.common;
+import java.sql.Date;
 
 public class Join {
 	private int adminId;	  // 관리자id
@@ -126,6 +127,11 @@ public class Join {
 	}
 	public void setReservationTime(String reservationTime) {
 		this.reservationTime = reservationTime;
+	}
+	@Override
+	public String toString() {
+		return "★★ 수영장 예약 회원 조회 [ ID : " + memberId +" | "+ " 이름 : " + memberName +" | "+ " 강아지 수 : " + memberPuppy
+				+" | "+ " 예약 날짜 : "+  reservationDate +" | "+ " 예약 타임 : " + reservationTime + " ]";
 	}
 
 

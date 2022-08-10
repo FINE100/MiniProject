@@ -30,7 +30,7 @@ package com.playground.common;
 	    
 		String driver = "oracle.jdbc.driver.OracleDriver"; // 포트명 
 		String url = "jdbc:oracle:thin:@localhost:1521:xe"; //접속주소, local host 대신 ip 주소가 들어갈수도 있음 (@127.0.0.1)
-	    String id = "test"; //DB id
+	    String id = "project"; //DB id
 	    String pw = "1234"; //DB pw
 	    
 	    public void conn() {

@@ -13,11 +13,15 @@ public class Member {
 	
 	private String memberTel; // 전화번호
 	private int memberPuppy; // 강아지 수
-
-	private int memberCharging; // 충전액
-	private int fare; // 사용금액 => 컬럼없음. 필요시 추가 요망.
-	private int memberPoint; // 포인트
 	private String role; // 롤 = 일반 회원 default : 1
+	private int use; // 1 운동장 2 운동장 + 수영장
+	
+
+	private int charging; // 충전액
+	private int point; // 포인트
+	
+	
+	
 
 	public void setMemberId(int memberId) {
 		this.memberId = memberId;
@@ -39,25 +43,10 @@ public class Member {
 		this.memberPuppy = memberPuppy;
 	}
 
-	public void setMemberCharging(int memberCharging) {
-		this.memberCharging = memberCharging;
-	}
-
-	public void setMemberPoint(int memberPoint) {
-		this.memberPoint = memberPoint;
-	}
-
 	public void setRole(String role) {
 		this.role = role;
 	}
-
-	public int getFare() {
-		return fare;
-	}
-
-	public void setFare(int fare) {
-		this.fare = fare;
-	}
+	
 
 	public int getMemberId() {
 		return memberId;
@@ -80,24 +69,41 @@ public class Member {
 	public int getMemberPuppy() {
 		return memberPuppy;
 	}
-
-	public int getMemberCharging() {
-		return memberCharging;
-	}
-
-	public int getMemberPoint() {
-		return memberPoint;
-	}
-
+	
 	public String getRole() {
 		return role;
 	}
 
+	public int getCharging() {
+		return charging;
+	}
+
+	public int getPoint() {
+		return point;
+	}
+	public void setCharging(int charging) {
+		this.charging = charging;
+	}
+
+	public void setPoint(int point) {
+		this.point = point;
+	}
+
+	
+
 	@Override
 	public String toString() {
 		return " 회원 정보 [ 회원 ID : " + memberId + ", 이름 : " + memberName + ", 연락처 : " + memberTel + ", 강아지 수 : "
-				+ memberPuppy + "마리" + ", 멤버십 금액 현황 : " + (memberCharging - fare) + "/" + memberCharging
-				+ ", 포인트 적립금액 : " + memberPoint + "]";
+				+ memberPuppy + "마리" +  "]";
 	}
+
+	public int getUse() {
+		return use;
+	}
+
+	public void setUse(int use) {
+		this.use = use;
+	}
+
 
 }
