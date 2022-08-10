@@ -115,15 +115,31 @@ public class AdminService {
 public void MemberInfo() {
 	List<Member> list = AdminDAO.getInstance().MemberInfo();
 	for(Member member : list) {
-		System.out.println("*******************************************************");
-		System.out.println();
-		System.out.println();
-		System.out.println();
-		System.out.println();
-		
-		System.out.println("*******************************************************");
+		System.out.println("──────────────────────────────────────────────────────────────");
+		System.out.println(" ● 회원 ID   : " + member.getMemberId());
+		System.out.println(" ● 회원 이름  : " + member.getMemberName());
+		System.out.println(" ● 회원 연락처 : " + member.getMemberTel());
+		System.out.println("──────────────────────────────────────────────────────────────");
 		
 	}
 	
+}
+
+public void allMemberInfo() {
+	List<Member> list = AdminDAO.getInstance().MemberInfo();
+	for(Member member : list) {
+		System.out.println("──────────────────────────────────────────────────────────────");
+		System.out.println(" ● 회원 ID    : " + member.getMemberId());
+		System.out.println(" ● 회원 이름   : " + member.getMemberName());
+		System.out.println(" ● 회원 연락처  : " + member.getMemberTel());
+		System.out.println(" ● 강아지 수    : " + member.getMemberId());
+		System.out.println("--------------------------------------------------------------");
+		System.out.println(" ● 멤버십 금액  : " + member.getMemberName());
+		System.out.println(" ● 포인트 잔액  : " + member.getMemberTel());
+		System.out.println("──────────────────────────────────────────────────────────────");
+			
+	
+}
+
 }
 }

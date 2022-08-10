@@ -172,15 +172,7 @@ public class AdminDAO extends DAO {
 				list.add(member);
 
 			}
-		} catch (SQLException e) {
-			System.out.println("※※※Error 에러 코드표 확인하세요.※※※");
-			System.out.println("해당 Error 코드 : " + e.getErrorCode());
-			System.out.println("해당원인" + e.getMessage());
-
-			// ora_00001 : 어떤 이유로 오류가 났습니다. >> 표시할 수 있도록 함.
-			e.getMessage(); // 오류 메세지 보이게 하는 방법
-			e.getErrorCode(); // 오류 메세지 보이게 하는 방법
-
+		
 		} catch (Exception e) {
 			e.printStackTrace();
 
@@ -215,15 +207,7 @@ public class AdminDAO extends DAO {
 				list.add(member);
 
 			}
-		} catch (SQLException e) {
-			System.out.println("※※※Error 에러 코드표 확인하세요.※※※");
-			System.out.println("해당 Error 코드 : " + e.getErrorCode());
-			System.out.println("해당원인" + e.getMessage());
-
-			// ora_00001 : 어떤 이유로 오류가 났습니다. >> 표시할 수 있도록 함.
-			e.getMessage(); // 오류 메세지 보이게 하는 방법
-			e.getErrorCode(); // 오류 메세지 보이게 하는 방법
-
+		
 		} catch (Exception e) {
 
 		} finally {

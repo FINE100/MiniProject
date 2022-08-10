@@ -78,7 +78,19 @@ public class Application {
 				as.updateTel();
 				
 			} else if (menu == 3) {
-				as.s
+				as.allMemberInfo();
+				
+//				int no = 0;
+//				System.out.println("1.회원 기본 정보 조회 | 2. 회원 상세 정보 조회");
+//				System.out.println("선택 > ");
+//				no = Integer.parseInt(scn.nextLine());
+//				if(no==1) {
+//					as.MemberInfo();
+//				}else if(no==2) {
+//					as.allMemberInfo();
+//			}
+					//System.out.println("다시 입력해주세요");
+				}
 			} else if (menu == 4) {
 			
 			} else if (menu == 5) {
@@ -91,5 +103,5 @@ public class Application {
 
 		}
 
-	}
+	
 
