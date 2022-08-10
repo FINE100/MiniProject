@@ -119,7 +119,7 @@ public class MemberDAO extends DAO {
 
 						
 			
-			result = stmt.executeUpdate(sql);
+			result = pstmt.executeUpdate();
 
 		} catch (Exception e) {
 
