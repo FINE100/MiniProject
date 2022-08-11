@@ -19,6 +19,7 @@ public class Member {
 
 	private int charging; // 충전액
 	private int point; // 포인트
+	private String startDay; // 충전일
 
 	
 	
@@ -104,6 +105,14 @@ public class Member {
 
 	public void setUse(int use) {
 		this.use = use;
+	}
+
+	public String getStartDay() {
+		return startDay;
+	}
+
+	public void setStartDay(String startDay) {
+		this.startDay = startDay;
 	}
 
 

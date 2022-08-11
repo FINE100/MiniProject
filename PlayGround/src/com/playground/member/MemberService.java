@@ -13,6 +13,42 @@ import com.prlayground.pay.Pay;
 
 public class MemberService {
 	Scanner scn = new Scanner(System.in);
+	Member member = new Member();
+	
+	
+	//멤버십 충전 
+	public void charging() {
+		System.out.println("───────────♥º♥──────────── with Dang ─────────────♥º♥─────────");
+		System.out.println("           [    U・ᴥ・U  포인트 사용 탭입니다.  U・ᴥ・U      ]          ");
+		System.out.println("──────────────────────────────────────────────────────────────");
+		System.out.print(" 충전할 ID를 입력해주세요 >>> ");
+		int id = Integer.parseInt(scn.nextLine());
+		System.out.println("---------------------------------------------------------------");
+		System.out.print(" 충전할 금액을 입력해주세요 >>> ");
+		int money = Integer.parseInt(scn.nextLine());
+		System.out.println("---------------------------------------------------------------");
+		
+		member.setMemberId(id);
+		member.setCharging(money);
+		member.getStartDay();
+		
+		int result = MemberDAO.getInstance().charging(member);
+
+		if (result == 1) {
+			System.out.println();
+			System.out.println(money+ "원 충전 완료!");
+			System.out.println();
+		} else {
+			System.out.println("충전이 실패했습니다. 다시 확인해주세요.");
+			System.out.println();
+		}
+
+		
+		
+		
+		
+		
+	}
 	
 	
 	// 멤버십 조회 
@@ -47,7 +83,7 @@ public class MemberService {
 		 int use = Integer.parseInt(scn.nextLine());
 		 
 		 join.setMemberId(memberId);
-		 join.setUse(use);
+//		 join.setUse(use);
 		 
 
 			int result = MemberDAO.getInstance().useMembership(join);

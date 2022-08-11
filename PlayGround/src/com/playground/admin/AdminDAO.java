@@ -18,7 +18,7 @@ public class AdminDAO extends DAO {
 
 	private static AdminDAO ad = new AdminDAO();
 
-	private AdminDAO() {
+	AdminDAO() {
 
 	}
 
@@ -62,7 +62,7 @@ public class AdminDAO extends DAO {
 		try {
 			conn();
 			String sql = "insert into member (member_id, member_pw,"
-					+ "member_name,member_tel, member_puppy, role, charging, point ) values (?,?,?,?,?,?,?,?)";
+					+ "member_name,member_tel, member_puppy, role, charging, point,start_day) values (?,?,?,?,?,?,?,?, to_char(sysdate, 'yyyy/mm/dd'))";
 			pstmt = conn.prepareStatement(sql);
 			pstmt.setInt(1, member.getMemberId());
 			pstmt.setString(2, member.getMemberPw());
@@ -151,7 +151,6 @@ public class AdminDAO extends DAO {
 	}
 
 	// 멤버십 조회 select
-	
 
 // 3-2) 전체 회원 조회 : 회원ID, 이름, 연락처, 강아지 수, 멤버십 금액, 포인트
 
@@ -161,8 +160,7 @@ public class AdminDAO extends DAO {
 
 		try {
 			conn();
-			String sql = "select member_id, member_name, member_tel, member_puppy, charging, point" 
-					+ " from member";
+			String sql = "select member_id, member_name, member_tel, member_puppy, charging, point" + " from member";
 
 			pstmt = conn.prepareStatement(sql);
 			rs = pstmt.executeQuery();
@@ -188,8 +186,6 @@ public class AdminDAO extends DAO {
 		return list;
 	}
 
-
-
 // 6. 수영장 예약현황 select
 //    전체 예약 현황 조회 : 회원ID, 이름, 강아지 수, 예약날짜, 이용 시간(타임)
 
@@ -201,12 +197,11 @@ public class AdminDAO extends DAO {
 			conn();
 			String sql = "select m.member_id member_id, m.member_name member_name, m.member_puppy member_puppy,"
 					+ " to_char(r. reservation_date, 'yyyy/mm/dd') reservation_date, r.reservation_time reservation_time "
-					+ " from member m, reservation r" + " where m.member_id = r.member_id"
-							+ " and r.member_id = ?";
+					+ " from member m, reservation r" + " where m.member_id = r.member_id" + " and r.member_id = ?";
 
 			pstmt = conn.prepareStatement(sql);
-			pstmt.setInt(1,memberId);
-			
+			pstmt.setInt(1, memberId);
+
 			rs = pstmt.executeQuery();
 
 			while (rs.next()) {
@@ -226,6 +221,43 @@ public class AdminDAO extends DAO {
 			disconnect();
 		}
 		return list;
+	}
+
+	// 포인트 사용
+	public int usePoint(int memberId) {
+		int result = 0;
+
+		try {
+			conn();
+
+			// 금액 사용
+			String sql = "update member " + " set charging = point + charging," + " point = point - point"
+					+ " where member_id = ?" + " and point>5000";
+
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setInt(1, memberId);
+
+			result = pstmt.executeUpdate();
+
+			if (result == 1) {
+				System.out.println();
+				System.out.println("정상 반영 되었습니다. 감사합니다!");
+				System.out.println();
+			} else {
+				System.out.println();
+				System.out.println("아직 5000점이 되지 않았습니다. 다음에 이용해주세요~");
+				System.out.println();
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+
+		} finally {
+			disconnect();
+		}
+
+		return result;
+
 	}
 
 //6. 수영장 예약현황 select
@@ -288,11 +320,39 @@ public class AdminDAO extends DAO {
 // 8. 일자별 매출 통계
 
 // 일일 매출
-	
-	
+
+	public Member dailySales(String startDay) {
+		Member mem = new Member();
+
+		try {
+			conn();
+			String sql = "SELECT to_char(start_day, 'yyyy/mm/dd') as daily, sum(charging) as pay"
+					+ " from member"
+					+ " where start_day is not null"
+					+ " and start_day = ?"
+					+ " group by to_char(start_day, 'yyyy/mm/dd')";
+			
+			
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1, startDay);
+
+			rs = pstmt.executeQuery();
+
+			if (rs.next()) {
+				mem = new Member();
+				mem.setStartDay(startDay);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+
+		} finally {
+			disconnect();
+		}
+		return mem;
+	}
 
 // 일일 방문객 수 
-	public Reservation dailySales(String date) {
+	public Reservation dailyVisitor(String date) {
 
 		Reservation reserv = null;
 
@@ -301,7 +361,7 @@ public class AdminDAO extends DAO {
 			String sql = "select sum(visitor) visitor, sum(reservation_puppy) puppy" + " from reservation"
 					+ " where reservation_date = to_char(SYSDATE, 'yyyy/mm/dd')";
 			pstmt = conn.prepareStatement(sql);
-			rs = stmt.executeQuery(sql);
+			rs = pstmt.executeQuery();
 
 			if (rs.next()) {
 				reserv = new Reservation();
@@ -317,3 +377,27 @@ public class AdminDAO extends DAO {
 	}
 
 }
+
+//String sql2 = "select point from pay where member_id =?";
+//pstmt = conn.prepareStatement(sql2);
+//pstmt.setInt(1, join.getMemberId());
+//
+//rs = pstmt.executeQuery();
+//
+//int point = 0;
+//if (rs.next()) {			
+//	point = rs.getInt("point");
+//}
+//
+//
+//	
+//	String sql = "update member"
+//			+ " set charging = charging - (select (visitor * 6000) + (reservation_puppy * (6000* ?))"
+//			+ " from reservation where member_id =?)," 
+//			+ " point = point + (select ((visitor * 6000)*0.05) + ((reservation_puppy * (6000* ?)*0.05))"
+//			+ " from reservation where member_id =?)"
+//			+ " where member_id =?";
+//
+//	
+//}
+//

@@ -58,39 +58,53 @@ public class Application {
 		while (flag) {
 		if (AdminService.memberInfo.getRole().equals("0")) {
 
-			System.out.println("───────────────────────── with Dang ──────────────────────────");
-			System.out.println("| 1. 멤버십 등록 | 2. 멤버십 수정    | 3. 멤버십 조회 | 4. 멤버십 충전  |");
-			System.out.println("─────────────────────────────────────────────────────────────");
-			System.out.println("| 5. 멤버십 삭제 | 6. 수영장 예약현황 | 7. 일자별 통계 | 8. 종료       |");
-			System.out.println("──────────────────────────────────────────────────────────────");
+			System.out.println("───────────────────────── with Dang ───────────────────────────");
+			System.out.println("| 1.  멤버십 등록    | 2. 멤버십 수정  | 3. 멤버십 조회 | 4. 포인트 전환  |");
+			System.out.println("───────────────────────────────────────────────────────────────");
+			System.out.println("| 5. 수영장 예약 현황 | 6. 일자별 통계  | 7. 멤버십 삭제  | 8. 종료       |");
+			System.out.println("───────────────────────────────────────────────────────────────");
 			System.out.println("| 선택 >>>> ");
-			
 			menu = scn.nextInt();
+			
 
 
 				if (menu == 1) {
+				
 					// 멤버십 등록 (회원가입)						
 					as.registMembership();
 					
 					// 멤버십 수정 (전화번호 수정)
 				} else if (menu == 2) {
 					as.updateTel();
+				
 					// 멤버 조회 
 				} else if (menu == 3) {
 					as.allSearchMember();
-
-				} else if (menu == 4) {
 					
-				} else if (menu == 5) {					
+					// 포인트 전환
+				} else if (menu == 4) {
+					as.usePoint();
+					
+					// 수영장 예약 조회 ( 회원별 | 날짜별 )
+				} else if (menu == 5) {	
 					as.selectReservation();
+					// 일 매출 
 				} else if (menu == 6) {
-
+					as.dailySales();
+					
 				} else if (menu == 7) {
+					as.deleteMembershp();
+					
+				} else if(menu == 8) {		
+					System.out.println("종료합니다!");
+					
+					flag = false;
+					break;
 
-				}
+				} System.out.println("메뉴로 돌아갑니다!");
 
 			}else if(AdminService.memberInfo.getRole().equals("1")) {
-				System.out.println("─────────────────────────────────────────────────────────────");
+				System.out.println("──────────────────────── with Dang ──────────────────────────");
 				System.out.println("| 1. 멤버십 충전 |  2. 멤버십 사용  | 3. 멤버십 조회 |  4. 수영장 예약 |");
 				System.out.println("─────────────────────────────────────────────────────────────");
 				System.out.println("| 선택 >>>> ");
@@ -98,7 +112,7 @@ public class Application {
 				
 				// 멤버십 충전
 				if (menu == 1) {
-				
+					ms.charging();
 				// 멤버십 사용
 				} else if (menu == 2) {
 					ms.useMembership();
