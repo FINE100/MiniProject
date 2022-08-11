@@ -57,13 +57,12 @@ public class AdminDAO extends DAO {
 	// 멤버십 삭제 | 7. 일자별 통계
 
 	// 1. 멤버십 등록 insert
-	public int registMembership() {
-		Member member = new Member();
+	public int registMembership(Member member) {
 		int result = 0;
 		try {
 			conn();
 			String sql = "insert into member (member_id, member_pw,"
-					+ "member_name,member_tel, member_puppy, role,use) values (?,?,?,?,?,?,?)";
+					+ "member_name,member_tel, member_puppy, role, charging, point ) values (?,?,?,?,?,?,?,?)";
 			pstmt = conn.prepareStatement(sql);
 			pstmt.setInt(1, member.getMemberId());
 			pstmt.setString(2, member.getMemberPw());
@@ -71,15 +70,16 @@ public class AdminDAO extends DAO {
 			pstmt.setString(4, member.getMemberTel());
 			pstmt.setInt(5, member.getMemberPuppy());
 			pstmt.setString(6, member.getRole());
-			pstmt.setInt(7, member.getUse());
+			pstmt.setInt(7, 0);
+			pstmt.setInt(8, 0);
 
 			result = pstmt.executeUpdate();
 
-			if (result == 1) {
-				System.out.println("정상 등록 되었습니다.");
-			} else {
-				System.out.println("등록이 실패하였습니다.");
-			}
+//			if (result == 1) {
+//				System.out.println("정상 등록 되었습니다.");
+//			} else {
+//				System.out.println("등록이 실패하였습니다.");
+//			}
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -91,14 +91,14 @@ public class AdminDAO extends DAO {
 
 	// 2. 멤버십 수정 update
 	// 2-1. 멤버십 충전
-	public int chargeMembership(Pay pay) {
+	public int chargeMembership(Member member) {
 		int result = 0;
 		try {
 			conn();
-			String sql = "update pay set charging = ? where member_id =?";
+			String sql = "update member set charging = ? where member_id =?";
 			pstmt = conn.prepareStatement(sql);
-			pstmt.setInt(1, pay.getCharging());
-			pstmt.setInt(2, pay.getMemberId());
+			pstmt.setInt(1, member.getCharging());
+			pstmt.setInt(2, member.getMemberId());
 
 			result = stmt.executeUpdate(sql);
 
@@ -126,19 +126,19 @@ public class AdminDAO extends DAO {
 		try {
 			conn();
 			String sql = "update member set member_tel = ? where member_id =?";
-			
+
 			pstmt = conn.prepareStatement(sql);
-			
+
 			pstmt.setString(1, member.getMemberTel());
 			pstmt.setInt(2, member.getMemberId());
 
 			result = pstmt.executeUpdate();
-
-			if (result == 1) {
-				System.out.println("전화번호 변경 완료.");
-			} else {
-				System.out.println("전화번호 변경 실패.");
-			}
+//
+//			if (result == 1) {
+//				System.out.println("전화번호 변경 완료.");
+//			} else {
+//				System.out.println("전화번호 변경 실패.");
+//			}
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -151,15 +151,19 @@ public class AdminDAO extends DAO {
 	}
 
 	// 멤버십 조회 select
-	// 3-1) 단건 회원 조회 : 회원ID, 이름, 연락처
+	
 
-	public List<Member> MemberInfo() {
+// 3-2) 전체 회원 조회 : 회원ID, 이름, 연락처, 강아지 수, 멤버십 금액, 포인트
+
+	public List<Member> allSearchMember() {
 		List<Member> list = new ArrayList<>();
 		Member member = null;
 
 		try {
 			conn();
-			String sql = "SELECT member_id, member_name, member_tel FROM member WHERE member_id = ?";
+			String sql = "select member_id, member_name, member_tel, member_puppy, charging, point" 
+					+ " from member";
+
 			pstmt = conn.prepareStatement(sql);
 			rs = pstmt.executeQuery();
 
@@ -168,88 +172,28 @@ public class AdminDAO extends DAO {
 				member.setMemberId(rs.getInt("member_id"));
 				member.setMemberName(rs.getString("member_name"));
 				member.setMemberTel(rs.getString("member_tel"));
-
-				list.add(member);
-
-			}
-		
-		} catch (Exception e) {
-			e.printStackTrace();
-
-		} finally {
-			disconnect();
-		}
-		return list;
-	}
-
-// 3-2) 전체 회원 조회 : 회원ID, 이름, 연락처, 강아지 수, 멤버십 금액, 포인트
-
-	public List<Member> allMemberInfo() {
-		List<Member> list = new ArrayList<>();
-		Member member = null;
-
-		try {
-			conn();
-			String sql = "select m.member_id member_id, m.member_name member_name, m.member_puppy member_puppy, "
-					+ "p.charging, p.point" + " from member m, pay" + " where m.member_id = p.member_id";
-			pstmt = conn.prepareStatement(sql);
-			rs = stmt.executeQuery(sql);
-
-			while (rs.next()) {
-				member = new Member();
-				member.setMemberId(rs.getInt("member_id"));
-				member.setMemberName(rs.getString("member_name"));
-				member.setMemberTel(rs.getString("member_tel"));
 				member.setMemberPuppy(rs.getInt("member_puppy"));
-				member.setCharging(rs.getInt("charing"));
+				member.setCharging(rs.getInt("charging"));
 				member.setPoint(rs.getInt("point"));
 
 				list.add(member);
 
 			}
-		
-		} catch (Exception e) {
 
+		} catch (Exception e) {
+			e.printStackTrace();
 		} finally {
 			disconnect();
 		}
 		return list;
 	}
 
-// 5. 포인트 적립 update 
-	public int useMemberPoint(Member member) {
-		int result = 0;
-		try {
-			conn();
-			String sql = "update member set point = ? where member_id =?";
-			pstmt = conn.prepareStatement(sql);
-			pstmt.setInt(1, member.getPoint());
-			pstmt.setInt(2, member.getMemberId());
 
-			result = stmt.executeUpdate(sql);
-
-		} catch (SQLException e) {
-			System.out.println("※※※Error 에러 코드표 확인하세요.※※※");
-			System.out.println("해당 Error 코드 : " + e.getErrorCode());
-			System.out.println("해당원인" + e.getMessage());
-
-			// ora_00001 : 어떤 이유로 오류가 났습니다. >> 표시할 수 있도록 함.
-			e.getMessage(); // 오류 메세지 보이게 하는 방법
-			e.getErrorCode(); // 오류 메세지 보이게 하는 방법
-
-		} catch (Exception e) {
-
-		} finally {
-			disconnect();
-		}
-		return result;
-
-	}
 
 // 6. 수영장 예약현황 select
 //    전체 예약 현황 조회 : 회원ID, 이름, 강아지 수, 예약날짜, 이용 시간(타임)
 
-	public List<Join> selectReservation() {
+	public List<Join> selectReservation(int memberId) {
 		List<Join> list = new ArrayList<>(); // list
 		Join join = null;
 
@@ -257,9 +201,12 @@ public class AdminDAO extends DAO {
 			conn();
 			String sql = "select m.member_id member_id, m.member_name member_name, m.member_puppy member_puppy,"
 					+ " to_char(r. reservation_date, 'yyyy/mm/dd') reservation_date, r.reservation_time reservation_time "
-					+ " from member m, reservation r" + " where m.member_id = r.member_id";
+					+ " from member m, reservation r" + " where m.member_id = r.member_id"
+							+ " and r.member_id = ?";
 
 			pstmt = conn.prepareStatement(sql);
+			pstmt.setInt(1,memberId);
+			
 			rs = pstmt.executeQuery();
 
 			while (rs.next()) {
@@ -282,7 +229,7 @@ public class AdminDAO extends DAO {
 	}
 
 //6. 수영장 예약현황 select
-// (당일) 타임별 예약 현황 조회 : A타임 | B 타임 | C 타임 => 예약 날짜, id, 이름, 강아지 수, 예약 타임 
+//  날짜별 현황 조회 : A타임 | B 타임 | C 타임 => 예약 날짜, id, 이름, 강아지 수, 예약 타임 
 	public List<Join> TimeReservation(String date) {
 		List<Join> list = new ArrayList<>(); // list
 		Join join = null;
@@ -328,14 +275,6 @@ public class AdminDAO extends DAO {
 			pstmt.setInt(1, memberId);
 
 			result = pstmt.executeUpdate();
-		} catch (SQLException e) {
-			System.out.println("※※※Error 에러 코드표 확인하세요.※※※");
-			System.out.println("해당 Error 코드 : " + e.getErrorCode());
-			System.out.println("해당원인" + e.getMessage());
-
-			// ora_00001 : 어떤 이유로 오류가 났습니다. >> 표시할 수 있도록 함.
-			e.getMessage(); // 오류 메세지 보이게 하는 방법
-			e.getErrorCode(); // 오류 메세지 보이게 하는 방법
 
 		} catch (Exception e) {
 
@@ -349,6 +288,8 @@ public class AdminDAO extends DAO {
 // 8. 일자별 매출 통계
 
 // 일일 매출
+	
+	
 
 // 일일 방문객 수 
 	public Reservation dailySales(String date) {

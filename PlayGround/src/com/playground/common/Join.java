@@ -2,10 +2,7 @@ package com.playground.common;
 import java.sql.Date;
 
 public class Join {
-	private int adminId;	  // 관리자id
-	private String adminpPw; // 관리자pw
-//	private String role;	 // 롤 = 관리자 default :0
-	
+
 	private int memberId; // 회원 ID
 	private String memberPw; // 회원 pw = tel
 	private String memberName; // 회원이름
@@ -13,30 +10,25 @@ public class Join {
 	private String memberTel; // 전화번호
 	private int memberPuppy; // 강아지 수
 
-	private int memberCharging; // 충전액
-	private int fare; // 사용금액 => 컬럼없음. 필요시 추가 요망.
-	private int memberPoint; // 포인트
+	private int charging; // 충전액	
+	private int point; // 포인트
 	private String role; // 롤 = 일반 회원 default : 1
 	
-	private int reservationId; // 회원 ID
 	private String reservationDate; // 이용날짜
 	private String reservationAvailable; // 이용 가능 인원
 	private int reservationPuppy; // 강아지 수
 	private int totalPuppy; // 해당일에 이용하는 강아지 수
 	private String reservationTime; // 이용시간 (A,B,C)
 	
+	private int use;
 	
-	public int getAdminId() {
-		return adminId;
+	
+	
+	public int getUse() {
+		return use;
 	}
-	public void setAdminId(int adminId) {
-		this.adminId = adminId;
-	}
-	public String getAdminpPw() {
-		return adminpPw;
-	}
-	public void setAdminpPw(String adminpPw) {
-		this.adminpPw = adminpPw;
+	public void setUse(int use) {
+		this.use = use;
 	}
 	public int getMemberId() {
 		return memberId;
@@ -68,36 +60,14 @@ public class Join {
 	public void setMemberPuppy(int memberPuppy) {
 		this.memberPuppy = memberPuppy;
 	}
-	public int getMemberCharging() {
-		return memberCharging;
-	}
-	public void setMemberCharging(int memberCharging) {
-		this.memberCharging = memberCharging;
-	}
-	public int getFare() {
-		return fare;
-	}
-	public void setFare(int fare) {
-		this.fare = fare;
-	}
-	public int getMemberPoint() {
-		return memberPoint;
-	}
-	public void setMemberPoint(int memberPoint) {
-		this.memberPoint = memberPoint;
-	}
+	
 	public String getRole() {
 		return role;
 	}
 	public void setRole(String role) {
 		this.role = role;
 	}
-	public int getReservationId() {
-		return reservationId;
-	}
-	public void setReservationId(int reservationId) {
-		this.reservationId = reservationId;
-	}
+	
 	public String getReservationDate() {
 		return reservationDate;
 	}
@@ -132,6 +102,18 @@ public class Join {
 	public String toString() {
 		return "★★ 수영장 예약 회원 조회 [ ID : " + memberId +" | "+ " 이름 : " + memberName +" | "+ " 강아지 수 : " + memberPuppy
 				+" | "+ " 예약 날짜 : "+  reservationDate +" | "+ " 예약 타임 : " + reservationTime + " ]";
+	}
+	public int getCharging() {
+		return charging;
+	}
+	public void setCharging(int charging) {
+		this.charging = charging;
+	}
+	public int getPoint() {
+		return point;
+	}
+	public void setPoint(int point) {
+		this.point = point;
 	}
 
 

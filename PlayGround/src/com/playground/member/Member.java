@@ -19,6 +19,7 @@ public class Member {
 
 	private int charging; // 충전액
 	private int point; // 포인트
+
 	
 	
 	
