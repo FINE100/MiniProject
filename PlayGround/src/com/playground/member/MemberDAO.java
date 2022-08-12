@@ -66,11 +66,11 @@ public class MemberDAO extends DAO {
 			conn();
 			String sql = "update member " 
 						+ " set charging = charging + ?,"
-						+ " to_char(sysdate, 'yyyy/mm/dd')" 
+						+ " start_day = to_char(sysdate, 'yyyy/mm/dd')" 
 						+ " where member_id = ?";
 
 			pstmt = conn.prepareStatement(sql);
-			pstmt.setInt(1, 0);
+			pstmt.setInt(1, member.getCharging());
 			pstmt.setInt(2, member.getMemberId());
 
 			result = pstmt.executeUpdate();
@@ -132,7 +132,7 @@ public class MemberDAO extends DAO {
 
 	// 멤버십 금액 사용
 
-	public int useMembership(Join join) {
+	public int useMembership(Join join, int use) {
 
 		int result = 0;
 		try {
@@ -141,16 +141,20 @@ public class MemberDAO extends DAO {
 			// 금액 사용
 			String sql = "update member"
 					+ " set charging = charging - (select (visitor * 6000) + (reservation_puppy * (6000* ?))"
-					+ " from reservation where member_id =?),"
+					+ " from reservation where member_id =? and reservation_date = ?),"
 					+ " point = point + (select ((visitor * 6000)*0.05) + ((reservation_puppy * (6000* ?)*0.05))"
-					+ " from reservation where member_id =?)" + " where member_id =?";
+					+ " from reservation where member_id =? and reservation_date = ?)" + " where member_id =?";
 
 			pstmt = conn.prepareStatement(sql);
-			pstmt.setInt(1, 0);
+			pstmt.setInt(1, use);
 			pstmt.setInt(2, join.getMemberId());
-			pstmt.setInt(3, 0);
-			pstmt.setInt(4, join.getMemberId());
+			pstmt.setString(3, join.getReservationDate());
+			
+			pstmt.setInt(4, use);
 			pstmt.setInt(5, join.getMemberId());
+			pstmt.setString(6, join.getReservationDate());
+			
+			pstmt.setInt(7, join.getMemberId());
 
 			result = pstmt.executeUpdate();
 
@@ -173,7 +177,7 @@ public class MemberDAO extends DAO {
 		int result = 0;
 		try {
 			conn();
-			String sql = "insert into reservation " + " values (?,?,?,?,?,?)";
+			String sql = "insert into reservation " + " values (?,?,?,?,?)";
 
 			pstmt = conn.prepareStatement(sql);
 			pstmt.setInt(1, reserv.getMemberId());
@@ -193,6 +197,43 @@ public class MemberDAO extends DAO {
 		return result;
 
 	}
+	
+	public List<Join> TimeReservation(int id) {
+		List<Join> list = new ArrayList<>(); // list
+		Join join = null;
+
+		try {
+			conn();
+			String sql = " select to_char(r. reservation_date, 'yyyy/mm/dd') reservation_date, m.member_id member_id,"
+					+ " m.member_name member_name, r.reservation_puppy reservation_puppy, r.reservation_time reservation_time"
+					+ " from member m, reservation r" + " where  m.member_id = r.member_id AND m.member_id = ?";
+
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setInt(1, id);
+
+			rs = pstmt.executeQuery();
+
+			while (rs.next()) {
+				join = new Join();
+				join.setReservationDate(rs.getString("reservation_date"));
+				join.setMemberId(rs.getInt("member_id"));
+				join.setMemberName(rs.getString("member_name"));
+				join.setReservationPuppy(rs.getInt("reservation_puppy"));
+				join.setReservationTime(rs.getString("reservation_time"));
+
+				list.add(join);
+
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			disconnect();
+		}
+		return list;
+	}
+
+	
+
 
 }
 
